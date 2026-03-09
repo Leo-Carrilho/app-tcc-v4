@@ -1,0 +1,343 @@
+import { useEffect, useState, useRef } from "react";
+import "../../styles/Site/Landing.css";
+import Lottie from "lottie-react";
+import monitoramento from "../../../public/assets/icons/monitoramento.json.json";
+import analiseSafra from "../../../public/assets/icons/analiseSafra.json.json";
+import mapeamento from "../../../public/assets/icons/mapeamento.json.json";
+import auxilioIA from "../../../public/assets/icons/auxilioIA.json.json";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+// Registrar o plugin ScrollTrigger
+gsap.registerPlugin(ScrollTrigger);
+
+export default function Landing() {
+  const [prompt, setPrompt] = useState(null);
+
+  const instalar = () => {
+  if (prompt) {
+    prompt.prompt();
+  }
+};
+  
+  // Refs para os elementos que serão animados
+  const headerRef = useRef(null);
+  const heroTextRef = useRef(null);
+  const heroImgRef = useRef(null);
+  const cardsRef = useRef([]);
+  const contatoRef = useRef(null);
+  const formRef = useRef(null);
+  const contatoImgRef = useRef(null);
+
+useEffect(() => {
+
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    setPrompt(e);
+  });
+
+  // ===== ESTADO INICIAL =====
+  gsap.set(headerRef.current, { y: -120, opacity: 0 });
+
+  gsap.set(".hero-text > *", {
+    x: -80,
+    opacity: 0
+  });
+
+  gsap.set(heroImgRef.current, {
+    x: 120,
+    opacity: 0,
+    scale: 0.9
+  });
+
+  gsap.set(".hero-buttons a, .hero-buttons button", {
+    y: 80,
+    opacity: 0
+  });
+
+  gsap.set([...cardsRef.current, formRef.current, contatoImgRef.current, ".footer"], {
+    y: 60,
+    opacity: 0
+  });
+
+
+  // ===== TIMELINE PRINCIPAL =====
+  const tl = gsap.timeline({
+    defaults: { ease: "power3.out" }
+  });
+
+
+  // HEADER
+  tl.to(headerRef.current, {
+    y: 0,
+    opacity: 1,
+    duration: 0.8
+  });
+
+
+  // TEXTO HERO (tag -> titulo -> paragrafo)
+  tl.to(".hero-text > *", {
+    x: 0,
+    opacity: 1,
+    stagger: 0.25,
+    duration: 0.7
+  });
+
+
+  // CELULAR
+  tl.to(heroImgRef.current, {
+    x: 0,
+    opacity: 1,
+    scale: 1,
+    duration: 1
+  }, "-=0.6");
+
+
+  // BOTÕES
+  tl.to(".hero-buttons a, .hero-buttons button", {
+    y: 0,
+    opacity: 1,
+    duration: 0.9,
+    stagger: 0.2,
+    ease: "expo.out"
+  }, "-=0.4");
+
+
+  // ===== FLOAT DO CELULAR =====
+  gsap.to(heroImgRef.current, {
+    y: -20,
+    duration: 3,
+    repeat: -1,
+    yoyo: true,
+    ease: "sine.inOut"
+  });
+
+
+  // ===== CARDS =====
+  gsap.to(cardsRef.current, {
+    scrollTrigger: {
+      trigger: ".servicos",
+      start: "top 80%"
+    },
+    y: 0,
+    opacity: 1,
+    duration: 0.8,
+    stagger: 0.2,
+    ease: "back.out(1.2)"
+  });
+
+
+  // ===== CONTATO =====
+  gsap.to(formRef.current, {
+    scrollTrigger: {
+      trigger: ".contato",
+      start: "top 70%"
+    },
+    x: 0,
+    opacity: 1,
+    duration: 1
+  });
+
+  gsap.to(contatoImgRef.current, {
+    scrollTrigger: {
+      trigger: ".contato",
+      start: "top 70%"
+    },
+    x: 0,
+    opacity: 1,
+    duration: 1
+  });
+
+
+  // ===== FOOTER =====
+  gsap.to(".footer", {
+    scrollTrigger: {
+      trigger: ".footer",
+      start: "top 90%"
+    },
+    y: 0,
+    opacity: 1,
+    duration: 0.8
+  });
+
+
+  return () => {
+    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    gsap.killTweensOf("*");
+  };
+
+}, []);
+
+  return (
+    <>
+      <header ref={headerRef}>
+        <h1 className="logo logo-title">AGROTECH</h1>
+        <nav className="nav-menu">
+          <a href="#">Home</a>
+          <a href="#servicos">Serviços</a>
+          <a href="#contato">Contato</a>
+          <a href="/app" className="nav-btn">Nossa plataforma</a>
+        </nav>
+      </header>
+
+      <section className="hero">
+        <div className="hero-text" ref={heroTextRef}>
+          <span className="tag">Tecnologia agrícola</span>
+          <h1>
+            Serviços para <span>agricultura inteligente</span>
+          </h1>
+          <p>
+            Drones de alta precisão para monitoramento de safras contra pragas e doenças.
+          </p>
+          <div className="hero-buttons">
+            <a href="/app" className="btn">
+              Acessar Plataforma
+            </a>
+            <button className="btn-outline" onClick={instalar}>
+              Instalar App
+            </button>
+          </div>
+        </div>
+        <div className="hero-img" ref={heroImgRef}>
+          <img src="/assets/image/Mockup_cell2.png" alt="Mockup celular" />
+        </div>
+      </section>
+
+      <section className="servicos" id="servicos">
+        <h2>Serviços que oferecemos</h2>
+        <div className="cards">
+          {/* Card IA */}
+          <div 
+            className="card" 
+            ref={el => cardsRef.current[0] = el}
+          >
+            <Lottie
+              animationData={auxilioIA}
+              loop={true}
+              className="lottie-icon"
+            />
+            <h3>Auxilio de IA</h3>
+          </div>
+
+          {/* Card Mapeamento */}
+          <div 
+            className="card" 
+            ref={el => cardsRef.current[1] = el}
+          >
+            <Lottie
+              animationData={mapeamento}
+              loop={true}
+              className="lottie-icon"
+            />
+            <h3>Mapeamento</h3>
+          </div>
+
+          {/* Card Monitoramento */}
+          <div 
+            className="card" 
+            ref={el => cardsRef.current[2] = el}
+          >
+            <Lottie
+              animationData={monitoramento}
+              loop={true}
+              className="lottie-icon"
+            />
+            <h3>Monitoramento</h3>
+          </div>
+
+          {/* Card Análise de Safra */}
+          <div 
+            className="card" 
+            ref={el => cardsRef.current[3] = el}
+          >
+            <Lottie
+              animationData={analiseSafra}
+              loop={true}
+              className="lottie-icon"
+            />
+            <h3>Análise de Safra</h3>
+          </div>
+        </div>
+      </section>
+
+      <section className="contato" id="contato" ref={contatoRef}>
+        <div className="form" ref={formRef}>
+          <h2>Tem perguntas?</h2>
+          <input type="text" placeholder="Nome" />
+          <input type="email" placeholder="Email" />
+          <textarea placeholder="Mensagem"></textarea>
+          <button>Enviar mensagem</button>
+        </div>
+        <div className="contato-img" ref={contatoImgRef}>
+          <img src="/assets/image/Mockup_cell1.png" alt="Mockup celular" />
+        </div>
+      </section>
+
+     <footer className="footer">
+  <div className="footer-container">
+    {/* LOGO / SOBRE */}
+    <div className="footer-col">
+      <h2 className="footer-logo">AgroTech</h2>
+      <p>
+        Soluções com drones e tecnologia de precisão para monitoramento
+        agrícola, identificação de pragas e otimização de lavouras.
+      </p>
+    </div>
+
+    {/* LINKS */}
+    <div className="footer-col">
+      <h3>Links rápidos</h3>
+      <a href="#">Início</a>
+      <a href="#servicos">Serviços</a>
+      <a href="#tecnologia">Tecnologia</a>
+      <a href="#contato">Contato</a>
+    </div>
+
+    {/* FAQ */}
+    <div className="footer-col">
+      <h3>FAQ</h3>
+      <a href="#">Como funcionam os drones?</a>
+      <a href="#">Quanto custa o serviço?</a>
+      <a href="#">Atendem quais regiões?</a>
+      <a href="#">Como contratar?</a>
+    </div>
+
+    {/* LOCALIZAÇÃO */}
+    <div className="footer-col">
+      <h3>Onde estamos</h3>
+      <p>
+        📍 Americana - SP
+      </p>
+      <p>
+        Atendimento em toda região do interior paulista.
+      </p>
+      <p>
+        📧 contato@agrotech.com
+      </p>
+      <p>
+        📞 (19) 99999-9999
+      </p>
+    </div>
+
+    {/* AÇÃO */}
+    <div className="footer-col footer-action">
+      <h3>Plataforma</h3>
+      <p>
+        Acesse o sistema para acompanhar monitoramentos e relatórios.
+      </p>
+      <a href="/app" className="footer-btn">
+        Acessar Plataforma
+      </a>
+    </div>
+  </div>
+
+  {/* PARTE FINAL */}
+  <div className="footer-bottom">
+    <p>
+      © 2026 AgroTech • Todos os direitos reservados
+    </p>
+  </div>
+</footer>
+    </>
+  );
+}
