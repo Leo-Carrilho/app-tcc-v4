@@ -337,7 +337,7 @@ body {
 
 .farm-location span:first-child {
   font-size: 16px;
-  color: var(--primary);
+  color: #00cc6a;
 }
 
 .farm-sector {
@@ -373,7 +373,7 @@ body {
 .stat-value {
   font-size: 18px;
   font-weight: 600;
-  color: var(--primary);
+  color: #00ffaa !important;
 }
 
 .stat-divider {

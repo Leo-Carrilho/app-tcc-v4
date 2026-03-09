@@ -21,7 +21,7 @@ export default function FarmInfoCard({ farmData }) {
       <div className="farm-stats">
         <div className="stat-item">
           <span className="stat-label">Área Total</span>
-          <span className="stat-value">1.250 ha</span>
+          <span className="stat-value">{farmData.area_total}</span>
         </div>
         <div className="stat-divider"></div>
         <div className="stat-item">
