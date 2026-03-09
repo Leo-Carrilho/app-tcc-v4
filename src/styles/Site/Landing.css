@@ -7,7 +7,7 @@ padding:0;
 :root{
 --primary:#16f29a;
 --primary-dark:#10c97b;
---primary-glow:rgba(22,242,154,0.35);
+--primary-glow:rgba(30, 255, 165, 0.35);
 --background-dark:#080f0c;
 --background-light:#11241b;
 --text-primary:#f8fafc;
@@ -37,7 +37,7 @@ z-index:1000;
 .logo{
 font-family:"Jersey 15";
 font-size:40px;
-color:var(--primary);
+color: #16f29a;
 }
 
 nav{
@@ -52,7 +52,7 @@ color:white;
 }
 
 .nav-btn{
-background:var(--primary);
+background: #16f29a;
 padding:8px 18px;
 border-radius:20px;
 color:black;
@@ -75,12 +75,13 @@ max-width:500px;
 
 .hero h1{
 font-size:55px;
+font-weight: 800;
 margin:20px 0;
-color:var(--primary);
+color: #16f29a;
 }
 
 .hero h1 span{
-font-weight: 400;
+font-weight: 300;
 }
 
 .hero p{
@@ -94,21 +95,28 @@ gap:20px;
 }
 
 .btn{
-background:var(--primary);
+background: #16f29a;
 padding:14px 35px;
 border-radius:40px;
 text-decoration:none;
 color:black;
 font-weight:600;
 box-shadow:0 0 25px var(--primary-glow);
+transition:0.5s;
+}
+
+.btn:hover{
+background: #16f29a;
+box-shadow:0 0 35px var(--primary-glow);
 }
 
 .btn-outline{
-border:2px solid var(--primary);
+border:2px solid #16f29a;
 padding:12px 30px;
+background: none;
 border-radius:40px;
 text-decoration:none;
-color:var(--primary);
+color: #16f29a;
 }
 
 .hero-img img{
@@ -134,7 +142,7 @@ margin-top:40px;
 display: flex;
 flex-direction: column;
 align-items: center;
-background:var(--primary);
+background: #08d080;
 padding:30px;
 border-radius:15px;
 width:200px;
