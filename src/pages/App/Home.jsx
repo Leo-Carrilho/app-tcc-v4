@@ -98,7 +98,7 @@ export default function Home() {
 
         {hasFarm && <FarmInfoCard farmData={farmData} />}
 
-        <MetricsGrid hasFarm={hasFarm} weather={weather} />
+        <MetricsGrid hasFarm={hasFarm} weather={weather} farmData={farmData} />
 
         {hasFarm && (
           <FlightActionButton onNavigate={() => navigate("/novo-voo")} />

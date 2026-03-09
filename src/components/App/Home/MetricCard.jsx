@@ -11,14 +11,15 @@ export default function MetricCard({
   children 
 }) {
   const getHumidityStatus = (humidity) => {
-    if (humidity < 10) return { label: "Crítico", className: "critical", icon: "warning", color: "#ef4444" }
-    if (humidity < 20) return { label: "Muito Seco", className: "very-dry", icon: "water_drop", color: "#f97316" }
-    if (humidity < 30) return { label: "Seco", className: "dry", icon: "water_drop", color: "#fbbf24" }
-    if (humidity < 40) return { label: "Moderado", className: "moderate", icon: "water_drop", color: "#eab308" }
-    if (humidity < 60) return { label: "Ideal", className: "ideal", icon: "check_circle", color: "#10b981" }
-    if (humidity < 70) return { label: "Úmido", className: "wet", icon: "water_drop", color: "#3b82f6" }
-    if (humidity < 80) return { label: "Muito Úmido", className: "very-wet", icon: "water_drop", color: "#8b5cf6" }
-    return { label: "Excesso", className: "excess", icon: "warning", color: "#ec4899" }
+    if (humidity < 10) return { label: "Crítico", className: "critical", icon: "warning", color: "#224fe4ff" }
+    if (humidity < 20) return { label: "Muito Seco", className: "very-dry", icon: "water_drop", color: "#224fe4ff" }
+    if (humidity < 30) return { label: "Seco", className: "dry", icon: "water_drop", color: "#224fe4ff" }
+    if (humidity < 40) return { label: "Moderado", className: "moderate", icon: "water_drop", color: "#224fe4ff" }
+    if (humidity < 60) return { label: "Ideal", className: "ideal", icon: "check_circle", color: "#224fe4ff" }
+    if (humidity < 70) return { label: "Úmido", className: "wet", icon: "water_drop", color: "#224fe4ff" }
+    if (humidity < 80) return { label: "Muito Úmido", className: "very-wet", icon: "water_drop", color: "#224fe4ff" }
+     if (humidity < 100) return { label: "Extremamente Úmido", className: "very-wet", icon: "water_drop", color: "#224fe4ff" }
+    return { label: "Excesso", className: "excess", icon: "warning", color: "#224fe4ff" }
   }
 
   return (
@@ -36,7 +37,7 @@ export default function MetricCard({
       
       <div className="card-main">
         {children ? children : (
-          hasFarm && weather ? (
+          hasFarm ? (
             <>
               <span className="card-value">{value}</span>
               <span className="card-unit">{unit}</span>

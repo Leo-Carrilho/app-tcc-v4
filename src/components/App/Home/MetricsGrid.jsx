@@ -1,7 +1,7 @@
 // components/Home/MetricsGrid.jsx
 import MetricCard from './MetricCard'
 
-export default function MetricsGrid({ hasFarm, weather }) {
+export default function MetricsGrid({ hasFarm, weather, farmData }) {
   return (
     <section className="cards-section">
       <div className="section-header">
@@ -51,12 +51,15 @@ export default function MetricsGrid({ hasFarm, weather }) {
           </div>
         </MetricCard>
 
-        <MetricCard type="area" icon="agriculture" label="Área" sublabel="Monitorada" hasFarm={hasFarm}>
-          <>
-            <span className="card-value">1.250</span>
-            <span className="card-unit">ha</span>
-          </>
-        </MetricCard>
+       <MetricCard
+          type="area"
+          icon="landscape"
+          label="Área Total"
+          sublabel="Plantação"
+          value={farmData?.area_total}
+          unit="ha"
+          hasFarm={!!farmData}
+        />
       </div>
     </section>
   )

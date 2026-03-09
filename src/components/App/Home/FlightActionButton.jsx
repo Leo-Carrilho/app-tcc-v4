@@ -9,8 +9,7 @@ export default function FlightActionButton({ onNavigate }) {
             <div className="btn-icon-glow"></div>
           </div>
           <div className="btn-text">
-            <span className="btn-title">Iniciar Missão</span>
-            <span className="btn-subtitle">Mapeamento aéreo • 45min estimados</span>
+            <span className="btn-title">Iniciar Monitoramento</span>
           </div>
           <div className="btn-arrow-wrapper">
             <span className="material-symbols-outlined btn-arrow">arrow_forward</span>
