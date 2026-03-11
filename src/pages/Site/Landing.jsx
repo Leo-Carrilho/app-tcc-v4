@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from "react";
-import { FaEnvelope, FaUser, FaComment, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
-import { FaInstagram } from 'react-icons/fa'; 
-import { FaTiktok } from 'react-icons/fa'; 
+import emailjs from "@emailjs/browser";
+import { FaEnvelope, FaUser, FaComment, FaCheckCircle, FaTimesCircle, FaTiktok, FaInstagram, FaLinkedin, FaFacebook } from 'react-icons/fa';
 import "../../styles/Site/Landing.css";
 import Lottie from "lottie-react";
 import monitoramento from "../../../public/assets/icons/monitoramento.json.json";
@@ -30,6 +29,8 @@ export default function Landing() {
   const contatoRef = useRef(null);
   const formRef = useRef(null);
   const contatoImgRef = useRef(null);
+
+  
 
   const instalar = () => {
     if (prompt) {
@@ -232,41 +233,25 @@ const handleChange = (e) => {
   }
 };
 
-const handleSubmit = async (e) => {
+const handleSubmit = (e) => {
   e.preventDefault();
-  
-  if (!validateForm()) return;
-  
-  setFormStatus({ submitted: true, loading: true, success: false, message: '' });
-  
-  // Simulação de envio (substitua pela sua API real)
-  try {
-    // Aqui você pode integrar com EmailJS, Formspree, ou sua própria API
-    await new Promise(resolve => setTimeout(resolve, 2000)); // Simula envio
-    
-    setFormStatus({
-      submitted: true,
-      loading: false,
-      success: true,
-      message: 'Mensagem enviada com sucesso! Entraremos em contato em breve.'
-    });
-    
-    // Limpa o formulário após sucesso
-    setFormData({ nome: '', email: '', mensagem: '' });
-    
-    // Limpa a mensagem de sucesso após 5 segundos
-    setTimeout(() => {
-      setFormStatus({ submitted: false, loading: false, success: false, message: '' });
-    }, 5000);
-    
-  } catch (error) {
-    setFormStatus({
-      submitted: true,
-      loading: false,
-      success: false,
-      message: 'Erro ao enviar mensagem. Tente novamente.'
-    });
-  }
+
+  emailjs.send(
+    "service_7fr0fe5",
+    "template_5v6g8zd",
+    {
+      nome: formData.nome,
+      email: formData.email,
+      mensagem: formData.mensagem
+    },
+    "O44E0hQFX6jcT0ATN"
+  )
+  .then(() => {
+    alert("Mensagem enviada!");
+  })
+  .catch(() => {
+    alert("Erro ao enviar");
+  });
 };
 
   return (
@@ -476,9 +461,9 @@ const handleSubmit = async (e) => {
       <div className="info-redes">
         <p>Siga-nos nas redes sociais:</p>
         <div className="redes-links">
-          <a href="#" className="rede-link">📷 Instagram</a>
-          <a href="#" className="rede-link">📘 Facebook</a>
-          <a href="#" className="rede-link">💼 LinkedIn</a>
+          <a href="#" className="rede-link"><FaInstagram size={24} color="#16f29a" /></a>
+          <a href="#" className="rede-link"><FaFacebook size={24} color="#16f29a" /></a>
+          <a href="#" className="rede-link"><FaLinkedin size={24} color="#16f29a" /></a>
         </div>
       </div>
     </div>

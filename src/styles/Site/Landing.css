@@ -163,7 +163,7 @@ margin-bottom:10px;
 
 /* ===== SEÇÃO CONTATO MELHORADA ===== */
 .contato {
-  background: linear-gradient(135deg, #0a2a1f 0%, #013621 100%);
+  background: #002a11;
   position: relative;
   overflow: hidden;
   padding: 80px 60px;
@@ -192,9 +192,9 @@ margin-bottom:10px;
   display: inline-block;
   padding: 6px 16px;
   background: rgba(22, 242, 154, 0.1);
-  border: 1px solid var(--primary);
+  border: 1px solid #08d080;
   border-radius: 30px;
-  color: var(--primary);
+  color: #08d080;
   font-size: 14px;
   margin-bottom: 15px;
 }
@@ -238,13 +238,13 @@ margin-bottom:10px;
 .info-icon {
   width: 50px;
   height: 50px;
-  background: rgba(22, 242, 154, 0.1);
+  background: rgb(12, 123, 79);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 24px;
-  color: var(--primary);
+  color: #13ec80;
 }
 
 .info-details h4 {
