@@ -24,11 +24,7 @@ export default function Landing() {
   const headerRef = useRef(null);
   const heroTextRef = useRef(null);
   const heroImgRef = useRef(null);
-  const cardsRef = useRef([]);
-  const stepsRef = useRef([]); // <-- ADICIONE ESTA LINHA
   const contatoRef = useRef(null);
-  const formRef = useRef(null);
-  const contatoImgRef = useRef(null);
 
   
 
@@ -63,10 +59,6 @@ export default function Landing() {
       opacity: 0
     });
 
-    gsap.set([...cardsRef.current, formRef.current, contatoImgRef.current, ".footer"], {
-      y: 60,
-      opacity: 0
-    });
 
     // ===== TIMELINE PRINCIPAL =====
     const tl = gsap.timeline({
@@ -114,63 +106,6 @@ export default function Landing() {
       ease: "sine.inOut"
     });
 
-    // ===== CARDS =====
-    gsap.to(cardsRef.current, {
-      scrollTrigger: {
-        trigger: ".servicos",
-        start: "top 80%"
-      },
-      y: 0,
-      opacity: 1,
-      duration: 0.8,
-      stagger: 0.2,
-      ease: "back.out(1.2)"
-    });
-
-    // ===== NOVA SEÇÃO: STEPS =====
-    gsap.to(stepsRef.current, {
-      scrollTrigger: {
-        trigger: ".como-funciona",
-        start: "top 80%"
-      },
-      y: 0,
-      opacity: 1,
-      duration: 0.8,
-      stagger: 0.2,
-      ease: "back.out(1.2)"
-    });
-
-    // ===== CONTATO =====
-    gsap.to(formRef.current, {
-      scrollTrigger: {
-        trigger: ".contato",
-        start: "top 70%"
-      },
-      x: 0,
-      opacity: 1,
-      duration: 1
-    });
-
-    gsap.to(contatoImgRef.current, {
-      scrollTrigger: {
-        trigger: ".contato",
-        start: "top 70%"
-      },
-      x: 0,
-      opacity: 1,
-      duration: 1
-    });
-
-    // ===== FOOTER =====
-    gsap.to(".footer", {
-      scrollTrigger: {
-        trigger: ".footer",
-        start: "top 90%"
-      },
-      y: 0,
-      opacity: 1,
-      duration: 0.8
-    });
 
     return () => {
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
@@ -296,7 +231,6 @@ const handleSubmit = (e) => {
           {/* Card IA */}
           <div 
             className="card" 
-            ref={el => cardsRef.current[0] = el}
           >
             <Lottie
               animationData={auxilioIA}
@@ -308,8 +242,7 @@ const handleSubmit = (e) => {
 
           {/* Card Mapeamento */}
           <div 
-            className="card" 
-            ref={el => cardsRef.current[1] = el}
+            className="card"
           >
             <Lottie
               animationData={mapeamento}
@@ -322,7 +255,6 @@ const handleSubmit = (e) => {
           {/* Card Monitoramento */}
           <div 
             className="card" 
-            ref={el => cardsRef.current[2] = el}
           >
             <Lottie
               animationData={monitoramento}
@@ -335,7 +267,6 @@ const handleSubmit = (e) => {
           {/* Card Análise de Safra */}
           <div 
             className="card" 
-            ref={el => cardsRef.current[3] = el}
           >
             <Lottie
               animationData={analiseSafra}
@@ -357,7 +288,7 @@ const handleSubmit = (e) => {
 
         <div className="steps-container">
           {/* Passo 1 */}
-          <div className="step-card" ref={el => stepsRef.current[0] = el}>
+          <div className="step-card" >
             <div className="step-number">1</div>
             <div className="step-icon">
               <Lottie
@@ -371,7 +302,7 @@ const handleSubmit = (e) => {
           </div>
 
           {/* Passo 2 */}
-          <div className="step-card" ref={el => stepsRef.current[1] = el}>
+          <div className="step-card">
             <div className="step-number">2</div>
             <div className="step-icon">
               <Lottie
@@ -385,7 +316,7 @@ const handleSubmit = (e) => {
           </div>
 
           {/* Passo 3 */}
-          <div className="step-card" ref={el => stepsRef.current[2] = el}>
+          <div className="step-card">
             <div className="step-number">3</div>
             <div className="step-icon">
               <Lottie
@@ -410,7 +341,7 @@ const handleSubmit = (e) => {
         </div>
       </section>
 
-     <section className="contato" id="contato" ref={contatoRef}>
+     <section className="contato" id="contato">
   <div className="contato-container">
     {/* Lado esquerdo - Informações de contato */}
     <div className="contato-info">
@@ -469,7 +400,7 @@ const handleSubmit = (e) => {
     </div>
 
     {/* Lado direito - Formulário */}
-    <div className="form-container" ref={formRef}>
+    <div className="form-container">
       <div className="form-wrapper">
         <h3>Envie uma mensagem</h3>
         
@@ -553,7 +484,7 @@ const handleSubmit = (e) => {
   </div>
 
   {/* Mockup celular decorativo */}
-  <div className="contato-img" ref={contatoImgRef}>
+  <div className="contato-img">
     <img src="/assets/image/Mockup_cell1.png" alt="Mockup celular" />
   </div>
 </section>

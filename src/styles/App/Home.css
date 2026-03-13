@@ -423,18 +423,18 @@ body {
   align-items: center;
   gap: 6px;
   padding: 4px 12px;
-  background: rgba(255, 68, 68, 0.1);
-  border: 1px solid rgba(255, 68, 68, 0.2);
+  background: rgba(255, 68, 68, 0.1) !important;
+  border: 1px solid rgba(255, 68, 68, 0.2) !important;
   border-radius: 30px;
   font-size: 11px;
   font-weight: 500;
-  color: #ff4444;
+  color: #ff4444 !important;
 }
 
 .live-dot {
   width: 6px;
   height: 6px;
-  background: #ff4444;
+  background: #ff4444 !important;
   border-radius: 50%;
   animation: livePulse 1.5s infinite;
 }
@@ -456,7 +456,7 @@ body {
 .metric-card {
   position: relative;
   padding: 20px;
-  background: linear-gradient(135deg, var(--card-bg), rgba(18, 22, 28, 0.4));
+  background: linear-gradient(135deg, var(--card-bg), rgba(18, 22, 28, 0.4)) !important;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid var(--glass-border);
@@ -472,7 +472,7 @@ body {
   content: '';
   position: absolute;
   inset: -2px;
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  background: linear-gradient(135deg, var(--primary), var(--secondary)) !important;
   border-radius: 26px;
   opacity: 0;
   transition: opacity 0.3s;
@@ -494,7 +494,7 @@ body {
   right: 0;
   width: 40px;
   height: 40px;
-  background: linear-gradient(135deg, transparent 50%, rgba(0, 255, 136, 0.1) 100%);
+  background: linear-gradient(135deg, transparent 50%, rgba(0, 255, 136, 0.1) 100%) !important;
   pointer-events: none;
 }
 
