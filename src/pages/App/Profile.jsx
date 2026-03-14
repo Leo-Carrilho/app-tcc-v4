@@ -4,6 +4,7 @@ import { auth, db } from "../../services/firebase"
 import { doc, getDoc, updateDoc, collection, query, where, getDocs } from "firebase/firestore"
 import { useNavigate } from "react-router-dom"
 
+import FarmEditForm from "../../components/App/Profile/FarmEditForm"
 // Componentes
 import ProfileParticleBackground from "../../components/App/Profile/ProfileParticleBackground"
 import ProfileMouseGlow from "../../components/App/Profile/ProfileMouseGlow"
@@ -30,6 +31,8 @@ export default function Profile() {
   const [editing, setEditing] = useState(false)
   const [saving, setSaving] = useState(false)
   const [activeTab, setActiveTab] = useState("pessoal")
+  const [editingFarm, setEditingFarm] = useState(false)
+  const [savingFarm, setSavingFarm] = useState(false)
   const [formData, setFormData] = useState({
     name: "",
     age: "",
@@ -161,6 +164,37 @@ export default function Profile() {
     }
   }
 
+  const handleSaveFarm = async (updatedFarmData) => {
+  if (!user || !farmData?.id) return
+
+  setSavingFarm(true)
+  try {
+    const farmRef = doc(db, "farms", farmData.id)
+    await updateDoc(farmRef, {
+      name: updatedFarmData.name,
+      area_total: parseFloat(updatedFarmData.area_total) || 0,
+      plantacao: updatedFarmData.plantacao || "",
+      municipio: updatedFarmData.municipio,
+      uf: updatedFarmData.uf,
+      bairro: updatedFarmData.bairro || "",
+      cep: updatedFarmData.cep || "",
+      data_aquisicao: updatedFarmData.data_aquisicao || "",
+      telefone: updatedFarmData.telefone || "",
+      tipo_proprietario: updatedFarmData.tipo_proprietario || "Proprietário",
+      updatedAt: new Date().toISOString()
+    })
+
+    showAlert("success", "Fazenda atualizada com sucesso! 🌱")
+    setEditingFarm(false)
+    await loadFarmData(user.uid)
+  } catch (error) {
+    console.error("Erro ao atualizar fazenda:", error)
+    showAlert("error", "Erro ao atualizar fazenda")
+  } finally {
+    setSavingFarm(false)
+  }
+}
+
   const handleLogout = async () => {
     try {
       await auth.signOut()
@@ -175,8 +209,8 @@ export default function Profile() {
   }
 
   const handleEditFarm = () => {
-    navigate("/editar-fazenda", { state: { farmData } })
-  }
+  setEditingFarm(true)
+}
 
   const formatDocument = (doc) => {
     if (!doc) return "Não informado"
@@ -279,34 +313,43 @@ export default function Profile() {
 
         <AlertMessage type={alertMessage.type} text={alertMessage.text} />
 
-        <div className="profile-content">
-          {!editing ? (
-            <>
-              {activeTab === "pessoal" && (
-                <PersonalInfoView 
-                  userData={userData}
-                  user={user}
-                  formatDocument={formatDocument}
-                />
-              )}
+      <div className="profile-content">
+  {!editing ? (
+    <>
+      {activeTab === "pessoal" && (
+        <PersonalInfoView 
+          userData={userData}
+          user={user}
+          formatDocument={formatDocument}
+        />
+      )}
 
-              {activeTab === "fazenda" && (
-                <FarmInfoView 
-                  farmData={farmData}
-                  onAddFarm={handleAddFarm}
-                  onEditFarm={handleEditFarm}
-                  formatPhone={formatPhone}
-                />
-              )}
-            </>
-          ) : (
-            <ProfileEditForm 
-              formData={formData}
-              onChange={handleChange}
-              onIconSelect={handleIconSelect}
-            />
-          )}
-        </div>
+      {activeTab === "fazenda" && !editingFarm && (
+        <FarmInfoView 
+          farmData={farmData}
+          onAddFarm={handleAddFarm}
+          onEditFarm={handleEditFarm}
+          formatPhone={formatPhone}
+        />
+      )}
+
+      {activeTab === "fazenda" && editingFarm && (
+        <FarmEditForm 
+          farmData={farmData}
+          onSave={handleSaveFarm}
+          onCancel={() => setEditingFarm(false)}
+          saving={savingFarm}
+        />
+      )}
+    </>
+  ) : (
+    <ProfileEditForm 
+      formData={formData}
+      onChange={handleChange}
+      onIconSelect={handleIconSelect}
+    />
+  )}
+</div>
       </div>
 
       <MenuBar />

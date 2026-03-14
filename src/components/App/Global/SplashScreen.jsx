@@ -1,6 +1,6 @@
 // SplashScreen.jsx - Versão com foco na animação de crescimento das plantas
 import { useEffect, useState, useRef, memo } from "react"
-import "../../../styles/App/SplashScreen.css"
+import "../../../styles/Global/SplashScreen.css"
 
 // Componente de planta com animação de crescimento SUPER VISÍVEL
 const Plant = memo(({ plant, stage }) => {

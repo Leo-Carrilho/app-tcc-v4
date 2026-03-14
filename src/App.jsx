@@ -13,7 +13,8 @@ import Explore from "./pages/App/Explore"
 
 // Componentes
 import SplashScreen from "./components/App/Global/SplashScreen"
-import InstallPrompt from "./components/App/Global/InstallPrompt" // Vamos criar esse componente
+import InstallPrompt from "./components/App/Global/InstallPrompt"
+import InstallSuccess from "./components/App/Global/InstallSuccess"
 
 // Estilos
 import "./App.css"
@@ -22,81 +23,135 @@ function App() {
   const [loading, setLoading] = useState(false)
   const [deferredPrompt, setDeferredPrompt] = useState(null)
   const [showInstallPrompt, setShowInstallPrompt] = useState(false)
+  const [showInstallSuccess, setShowInstallSuccess] = useState(false)
   const [isInstalled, setIsInstalled] = useState(false)
+  const [isIOS, setIsIOS] = useState(false)
+  const [isAndroid, setIsAndroid] = useState(false)
 
   useEffect(() => {
-    // Verifica se já está instalado (modo standalone)
+    // Detectar dispositivo
+    const userAgent = navigator.userAgent
+    setIsIOS(/iPhone|iPad|iPod/i.test(userAgent))
+    setIsAndroid(/Android/i.test(userAgent))
+
+    // Verificar se já está instalado (modo standalone)
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
-                         window.navigator.standalone === true;
+                         window.navigator.standalone === true
     
     if (isStandalone) {
-      setIsInstalled(true);
+      setIsInstalled(true)
+      console.log('✅ App rodando em modo standalone')
+      return
     }
 
-    // Captura o evento de instalação
+    // Verificar parâmetros da URL
+    const params = new URLSearchParams(window.location.search)
+    const shouldInstall = params.get('install') === 'true'
+    const source = params.get('source')
+    
+    console.log('📱 Modo:', isStandalone ? 'standalone' : 'navegador')
+    console.log('🔧 Parâmetros:', { shouldInstall, source })
+
+    // Se veio para instalar, mostrar prompt após 1 segundo
+    if (shouldInstall && !isStandalone) {
+      setTimeout(() => {
+        setShowInstallPrompt(true)
+      }, 1000)
+    }
+
+    // Capturar evento de instalação
     const handleBeforeInstallPrompt = (e) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
+      e.preventDefault()
+      console.log('📲 Evento beforeinstallprompt capturado')
+      setDeferredPrompt(e)
       
-      // Verifica se veio do site com parâmetro de instalação
-      const params = new URLSearchParams(window.location.search);
-      if (params.get('install') === 'true' && !isStandalone) {
-        setShowInstallPrompt(true);
+      // Se veio com install=true, disparar automaticamente
+      if (shouldInstall) {
+        setTimeout(() => {
+          handleInstall()
+        }, 1500)
       }
-    };
+    }
 
     // Quando o app for instalado
-    const handleAppInstalled = () => {
-      setIsInstalled(true);
-      setShowInstallPrompt(false);
-      setDeferredPrompt(null);
+    const handleAppInstalled = (e) => {
+      console.log('🎉 App instalado com sucesso!', e)
+      setIsInstalled(true)
+      setShowInstallPrompt(false)
+      setShowInstallSuccess(true)
+      setDeferredPrompt(null)
       
-      // Opcional: redireciona ou mostra mensagem de sucesso
-      alert('App instalado com sucesso!');
-    };
+      // Tentar fechar a janela após 2 segundos (se possível)
+      setTimeout(() => {
+        try {
+          // Só tenta fechar se não estiver em modo standalone
+          if (!window.matchMedia('(display-mode: standalone)').matches) {
+            // No Android, tentar redirecionar para o app
+            if (isAndroid) {
+              const packageName = 'com.agrovoo.app' // Substitua pelo seu package name
+              const intentUrl = `intent://${window.location.host}#Intent;scheme=https;package=${packageName};end;`
+              window.location.href = intentUrl
+            }
+            
+            // Não é possível fechar programaticamente por segurança,
+            // mas podemos dar instruções
+            console.log('✅ App instalado! Feche esta aba e abra o app da área de trabalho.')
+          }
+        } catch (error) {
+          console.log('Erro ao tentar redirecionar:', error)
+        }
+      }, 3000)
+    }
 
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    window.addEventListener('appinstalled', handleAppInstalled);
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
+    window.addEventListener('appinstalled', handleAppInstalled)
 
     return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-      window.removeEventListener('appinstalled', handleAppInstalled);
-    };
-  }, []);
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
+      window.removeEventListener('appinstalled', handleAppInstalled)
+    }
+  }, [isAndroid])
 
   const handleInstall = async () => {
-  if (!deferredPrompt) return;
+    if (!deferredPrompt) {
+      // Se não tem o prompt, mostrar instruções manuais
+      if (isIOS) {
+        alert('📱 Para instalar no iPhone/iPad:\n\n' +
+              '1. Toque no botão Compartilhar (📤)\n' +
+              '2. Role para baixo e escolha "Adicionar à Tela de Início"\n' +
+              '3. Toque em "Adicionar" no canto superior direito')
+      } else if (isAndroid) {
+        alert('📱 Para instalar no Android:\n\n' +
+              '1. Toque no menu ⋮ (3 pontos)\n' +
+              '2. Selecione "Instalar app" ou "Adicionar à tela inicial"\n' +
+              '3. Confirme a instalação')
+      } else {
+        alert('💻 No computador:\n\n' +
+              'Clique no ícone de instalação (⬇️) na barra de endereços do navegador')
+      }
+      return
+    }
 
-  // Mostra o prompt de instalação do navegador
-  deferredPrompt.prompt();
-  
-  // Espera a escolha do usuário
-  const { outcome } = await deferredPrompt.userChoice;
-  
-  if (outcome === 'accepted') {
-    console.log('Usuário aceitou instalar');
-    
-    // AGUARDA UM POUCO PARA A INSTALAÇÃO COMPLETAR
-    setTimeout(() => {
-      // Tenta abrir o app no modo standalone
-      const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+    try {
+      // Mostrar o prompt nativo
+      deferredPrompt.prompt()
+      const { outcome } = await deferredPrompt.userChoice
       
-      if (!isStandalone) {
-        // Se não abriu automaticamente, sugere abrir
-        alert('App instalado! Agora você pode abri-lo direto da sua área de trabalho.');
+      if (outcome === 'accepted') {
+        console.log('✅ Usuário aceitou instalar')
+        setShowInstallPrompt(false)
+        
+        // Não precisa fazer mais nada, o evento 'appinstalled' será disparado
+      } else {
+        console.log('❌ Usuário cancelou')
+        setShowInstallPrompt(false)
       }
       
-      // Opcional: redireciona para uma página de sucesso
-      // window.location.href = '/instalado-com-sucesso';
-    }, 2000);
-    
-  } else {
-    console.log('Usuário cancelou');
-    setShowInstallPrompt(false);
+      setDeferredPrompt(null)
+    } catch (error) {
+      console.error('Erro na instalação:', error)
+    }
   }
-  
-  setDeferredPrompt(null);
-};
 
   return (
     <BrowserRouter>
@@ -105,11 +160,23 @@ function App() {
           <SplashScreen key="splash" onComplete={() => setLoading(false)} />
         ) : (
           <>
-            {/* Componente de prompt de instalação */}
+            {/* Prompt de instalação */}
             {showInstallPrompt && !isInstalled && (
               <InstallPrompt 
                 onInstall={handleInstall}
                 onClose={() => setShowInstallPrompt(false)}
+                isIOS={isIOS}
+                isAndroid={isAndroid}
+                hasPrompt={!!deferredPrompt}
+              />
+            )}
+
+            {/* Mensagem de sucesso após instalação */}
+            {showInstallSuccess && (
+              <InstallSuccess 
+                onClose={() => setShowInstallSuccess(false)}
+                isIOS={isIOS}
+                isAndroid={isAndroid}
               />
             )}
             

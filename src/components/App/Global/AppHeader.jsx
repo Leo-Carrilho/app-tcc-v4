@@ -1,7 +1,7 @@
 // components/AppHeader.jsx
 import { useState, useEffect } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
-import "../../../styles/App/AppHeader.css"
+import "../../../styles/Global/AppHeader.css"
 
 export default function AppHeader({ title, showLogo = true, showNotification = true }) {
   const navigate = useNavigate()
