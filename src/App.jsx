@@ -1,10 +1,8 @@
-// App.jsx
+// App.jsx do PWA
 import { BrowserRouter, Routes, Route } from "react-router-dom"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { AnimatePresence } from "framer-motion"
 
-// Importações de todas as páginas (todas em pages/App/)
-import Landing from "./pages/Site/Landing"
 import Intro from "./pages/App/Intro"
 import Login from "./pages/App/Login"
 import CadastroCompleto from "./pages/App/CadastroCompleto"
@@ -15,35 +13,98 @@ import Explore from "./pages/App/Explore"
 
 // Componentes
 import SplashScreen from "./components/App/Global/SplashScreen"
+import InstallPrompt from "./components/App/Global/InstallPrompt" // Vamos criar esse componente
 
 // Estilos
 import "./App.css"
 
 function App() {
   const [loading, setLoading] = useState(false)
+  const [deferredPrompt, setDeferredPrompt] = useState(null)
+  const [showInstallPrompt, setShowInstallPrompt] = useState(false)
+  const [isInstalled, setIsInstalled] = useState(false)
+
+  useEffect(() => {
+    // Verifica se já está instalado (modo standalone)
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                         window.navigator.standalone === true;
+    
+    if (isStandalone) {
+      setIsInstalled(true);
+    }
+
+    // Captura o evento de instalação
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      
+      // Verifica se veio do site com parâmetro de instalação
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('install') === 'true' && !isStandalone) {
+        setShowInstallPrompt(true);
+      }
+    };
+
+    // Quando o app for instalado
+    const handleAppInstalled = () => {
+      setIsInstalled(true);
+      setShowInstallPrompt(false);
+      setDeferredPrompt(null);
+      
+      // Opcional: redireciona ou mostra mensagem de sucesso
+      alert('App instalado com sucesso!');
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('appinstalled', handleAppInstalled);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', handleAppInstalled);
+    };
+  }, []);
+
+  const handleInstall = async () => {
+    if (!deferredPrompt) return;
+
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    
+    if (outcome === 'accepted') {
+      console.log('Usuário aceitou instalar');
+    } else {
+      console.log('Usuário cancelou');
+      setShowInstallPrompt(false);
+    }
+    
+    setDeferredPrompt(null);
+  };
 
   return (
     <BrowserRouter>
       <AnimatePresence mode="wait">
         {loading ? (
-          <SplashScreen
-            key="splash"
-            onComplete={() => setLoading(false)}
-          />
+          <SplashScreen key="splash" onComplete={() => setLoading(false)} />
         ) : (
-          <Routes key="app">
-            <Route path="/" element={<Landing />} />
-            <Route path="/app" element={<Intro />} />
-            <Route 
-              path="/login" 
-              element={<Login setAppLoading={setLoading} />} 
-            />
-            <Route path="/register" element={<CadastroCompleto />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/explore" element={<Explore />} />
-          </Routes>
+          <>
+            {/* Componente de prompt de instalação */}
+            {showInstallPrompt && !isInstalled && (
+              <InstallPrompt 
+                onInstall={handleInstall}
+                onClose={() => setShowInstallPrompt(false)}
+              />
+            )}
+            
+            <Routes key="app">
+              <Route path="/" element={<Intro />} />
+              <Route path="/login" element={<Login setAppLoading={setLoading} />} />
+              <Route path="/register" element={<CadastroCompleto />} />
+              <Route path="/home" element={<Home />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/explore" element={<Explore />} />
+            </Routes>
+          </>
         )}
       </AnimatePresence>
     </BrowserRouter>
