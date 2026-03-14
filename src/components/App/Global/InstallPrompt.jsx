@@ -1,6 +1,8 @@
+// app-pwa/src/components/App/Global/InstallPrompt.jsx
+
 import { motion } from "framer-motion";
-import { FaDownload, FaTimes } from 'react-icons/fa';
-import '../../../styles/App/InstallPrompt.css';
+import { FaDownload, FaTimes, FaChrome, FaMobile } from 'react-icons/fa';
+import './InstallPrompt.css';
 
 const InstallPrompt = ({ onInstall, onClose }) => {
   return (
@@ -27,9 +29,19 @@ const InstallPrompt = ({ onInstall, onClose }) => {
         <h3>Instalar App AgroTech</h3>
         
         <p>
-          Instale nosso app para uma experiência completa com acesso offline, 
-          notificações e muito mais!
+          Instale nosso app para uma experiência completa <strong>fora do navegador</strong>!
         </p>
+
+        <div className="install-benefits">
+          <div className="benefit-item">
+            <FaMobile size={20} />
+            <span>Abre como app nativo</span>
+          </div>
+          <div className="benefit-item">
+            <FaChrome size={20} />
+            <span>Sai do Chrome</span>
+          </div>
+        </div>
         
         <div className="install-prompt-features">
           <span>✅ Acesso rápido</span>
@@ -40,6 +52,10 @@ const InstallPrompt = ({ onInstall, onClose }) => {
         <button className="install-prompt-button" onClick={onInstall}>
           Instalar Agora
         </button>
+        
+        <p className="install-note">
+          ⚡ Após instalar, o app abrirá automaticamente fora do Chrome!
+        </p>
         
         <button className="install-prompt-later" onClick={onClose}>
           Agora não

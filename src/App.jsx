@@ -65,20 +65,38 @@ function App() {
   }, []);
 
   const handleInstall = async () => {
-    if (!deferredPrompt) return;
+  if (!deferredPrompt) return;
 
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
+  // Mostra o prompt de instalação do navegador
+  deferredPrompt.prompt();
+  
+  // Espera a escolha do usuário
+  const { outcome } = await deferredPrompt.userChoice;
+  
+  if (outcome === 'accepted') {
+    console.log('Usuário aceitou instalar');
     
-    if (outcome === 'accepted') {
-      console.log('Usuário aceitou instalar');
-    } else {
-      console.log('Usuário cancelou');
-      setShowInstallPrompt(false);
-    }
+    // AGUARDA UM POUCO PARA A INSTALAÇÃO COMPLETAR
+    setTimeout(() => {
+      // Tenta abrir o app no modo standalone
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+      
+      if (!isStandalone) {
+        // Se não abriu automaticamente, sugere abrir
+        alert('App instalado! Agora você pode abri-lo direto da sua área de trabalho.');
+      }
+      
+      // Opcional: redireciona para uma página de sucesso
+      // window.location.href = '/instalado-com-sucesso';
+    }, 2000);
     
-    setDeferredPrompt(null);
-  };
+  } else {
+    console.log('Usuário cancelou');
+    setShowInstallPrompt(false);
+  }
+  
+  setDeferredPrompt(null);
+};
 
   return (
     <BrowserRouter>
