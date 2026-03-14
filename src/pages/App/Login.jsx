@@ -1,9 +1,8 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { auth } from "../../services/firebase"
 import { signInWithEmailAndPassword } from "firebase/auth"
 import "../../styles/App/Login.css"
-
 
 export default function Login({ setAppLoading }) {
   const navigate = useNavigate()
@@ -14,8 +13,36 @@ export default function Login({ setAppLoading }) {
   const [rememberMe, setRememberMe] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
 
+  // ✅ VERIFICA SE JÁ ESTÁ LOGADO AO CARREGAR A PÁGINA
+  useEffect(() => {
+    const checkAuth = async () => {
+      // Verifica se tem usuário logado
+      const user = auth.currentUser;
+      
+      if (user) {
+        console.log("Usuário já está logado:", user.email);
+        
+        // Se estiver logado, ativa splash e redireciona
+        setAppLoading(true);
+        
+        setTimeout(() => {
+          navigate("/home");
+        }, 2000);
+      } else {
+        // Se não estiver logado, verifica se tem email lembrado
+        const rememberedEmail = localStorage.getItem("rememberedEmail");
+        if (rememberedEmail) {
+          setEmail(rememberedEmail);
+          setRememberMe(true);
+        }
+      }
+    };
+
+    checkAuth();
+  }, [navigate, setAppLoading]); // Dependências
+
   const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword) // inverte o valor
+    setShowPassword(!showPassword)
   }
 
   const handleLogin = async () => {
@@ -47,7 +74,7 @@ export default function Login({ setAppLoading }) {
       // 🔥 ATIVA A SPLASH
       setAppLoading(true)
 
-      // Aguarda splash terminar (ajuste se sua animação tiver outro tempo)
+      // Aguarda splash terminar
       setTimeout(() => {
         navigate("/home")
       }, 2000)
@@ -81,8 +108,6 @@ export default function Login({ setAppLoading }) {
     }
   }
 
-    document.body.classList.add('no-animations')
-
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       handleLogin()
@@ -91,7 +116,6 @@ export default function Login({ setAppLoading }) {
 
   return (
     <div className="login-container">
-
       <div className="login-background-layer login-background-layer-1"></div>
       <div className="login-background-layer login-background-layer-2"></div>
       <div className="login-background-overlay"></div>
@@ -121,18 +145,24 @@ export default function Login({ setAppLoading }) {
           </div>
 
           <div className="input-group-login">
-            <input
-              type={showPassword ? "text" : "password"} 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Sua Senha"
-            />
-            <button 
-              type="button"
-              onClick={togglePasswordVisibility}
-              className="password-toggle-btn"
-            >
-            </button>
+            <label>Senha</label>
+            <div className="password-input-wrapper">
+              <input
+                type={showPassword ? "text" : "password"} 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Sua Senha"
+                disabled={loading}
+              />
+              <button 
+                type="button"
+                onClick={togglePasswordVisibility}
+                className="password-toggle-btn"
+              >
+                {showPassword ? "👁️" : "👁️‍🗨️"}
+              </button>
+            </div>
           </div>
 
           <div className="login-options">
