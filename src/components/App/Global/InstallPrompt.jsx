@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { FaDownload, FaTimes } from 'react-icons/fa';
-import './InstallPrompt.css';
+import '../../../styles/App/InstallPrompt.css';
 
 const InstallPrompt = ({ onInstall, onClose }) => {
   return (
